@@ -11,14 +11,11 @@ from streamlit_cropper import st_cropper
 VERSION = "0.7.0"
 
 st.set_page_config(
-    page_title="Image WorkDesk",
+    page_title="Aiutino",
     page_icon="🖼️",
     menu_items={
         "About": f"Image WorkDesk v{VERSION}  "
-        f"\nApp contact: [Siddhant Sadangi](mailto:siddhant.sadangi@gmail.com)",
-        "Report a Bug": "https://github.com/SiddhantSadangi/ImageWorkdesk/issues/new",
-        "Get help": None,
-    },
+         },
     layout="wide",
 )
 
@@ -42,7 +39,7 @@ with st.sidebar:
     st.components.v1.html(sidebar_html, height=750)
 
 # ---------- HEADER ----------
-st.title("🖼️ Welcome to Image WorkDesk!")
+st.title("🖼️ Welcome to Aiutino!")
 
 
 # ---------- FUNCTIONS ----------

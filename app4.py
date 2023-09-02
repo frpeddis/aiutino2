@@ -71,13 +71,6 @@ with contextlib.suppress(NameError):
                 max_tokens=200,
                 temperature=0.2
             )
-            prompt = f"Now look for any questions contained in the text {text}. If you find a question, a quiz, a multiple-choice question, etc., give me the answer you consider correct to that question, quiz, or multiple-choice question. Do not end your output without giving an answer to questions contained in the text."
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                max_tokens=300,
-                temperature=0.2
-            )
-    
+            
             st.write("GPT-3 Analysis")
             st.write(response.choices[0].text.strip())

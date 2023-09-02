@@ -9,7 +9,7 @@ import openai
 import pytesseract
 
 # Initialize GPT API (Replace with your actual API key)
-openai.api_key = st.secrets["API_KEY"]
+#openai.api_key = st.secrets["API_KEY"]
 
 # Set tesseract cmd path
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
@@ -96,7 +96,10 @@ with contextlib.suppress(NameError):
             final_image = cropped_img
         else:
             final_image = rotated_img
-
+        # Perform OCR
+        st.write("Recognized Text")
+        text = pytesseract.image_to_string(final_image)
+        st.write(text)
         # ---------- FINAL OPERATIONS ----------
         
         

@@ -71,8 +71,8 @@ with contextlib.suppress(NameError):
             use_column_width="auto",
             caption=f"Rotated by {degrees} degrees clockwise",
         )
-        if st.button("↩️ Reset Rotation", use_container_width=True):
-            st.success("Rotation reset to original!")
+        #if st.button("↩️ Reset Rotation", use_container_width=True):
+        #    st.success("Rotation reset to original!")
         
         # ---------- CROP ----------
         st.text("Crop image ✂️")
@@ -103,12 +103,12 @@ with contextlib.suppress(NameError):
             caption=f"Final Image ({final_image.size[0]} x {final_image.size[1]})",
         )
         
-        final_image.save("final_image.png")
+        #final_image.save("final_image.png")
 
-        with open("final_image.png", "rb") as file:
-            st.download_button(
-                "💾 Download final image",
-                data=file,
-                mime="image/png",
-                use_container_width=True,
-            )
+        #with open("final_image.png", "rb") as file:
+        #    st.download_button(
+        #        "💾 Download final image",
+        #        data=file,
+        #        mime="image/png",
+        #        use_container_width=True,
+        #    )

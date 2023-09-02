@@ -9,7 +9,7 @@ import openai
 import pytesseract
 
 # Initialize GPT API (Replace with your actual API key)
-#openai.api_key = st.secrets["API_KEY"]
+openai.api_key = st.secrets["API_KEY"]
 #st.set_page_config(page_title="Aiutino ")
 
 

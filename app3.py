@@ -7,45 +7,42 @@ from PIL import Image
 from streamlit_cropper import st_cropper
 import openai
 import pytesseract
-import pyheif
 
+# Initialize GPT API (Replace with your actual API key)
+openai.api_key = st.secrets["API_KEY"]
 
-
-
-
-
-
-VERSION = "0.1"
+# Set tesseract cmd path
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 st.set_page_config(
     page_title="Aiutino",
-    page_icon="😎",
+    page_icon="🖼️",
     layout="wide",
 )
 
 # ---------- HEADER ----------
-st.title("😎 Welcome to Aiutino!")
+st.title("🖼️ Welcome to Aiutino!")
 
 # Image loading options
 option = st.radio(
-    label="Upload an image, take one with your camera, or load image from a URL",
-    options=("Upload an image ⬆️", "Take a photo with my camera 📷", "Load image from a URL 🌐"),
+    "Upload an image, take one with your camera, or load image from a URL",
+    ("Upload an image ⬆️", "Take a photo with my camera 📷", "Load image from a URL 🌐"),
 )
 
+upload_img = None
 if option == "Take a photo with my camera 📷":
-    upload_img = st.camera_input(label="Take a picture")
+    upload_img = st.camera_input("Take a picture")
     mode = "camera"
 
 elif option == "Upload an image ⬆️":
     upload_img = st.file_uploader(
-        label="Upload an image", type=["bmp", "jpg", "jpeg", "png", "svg"]
+        "Upload an image", type=["bmp", "jpg", "jpeg", "png", "svg"]
     )
     mode = "upload"
 
 elif option == "Load image from a URL 🌐":
     url = st.text_input("Image URL", key="url")
     mode = "url"
-
     if url != "":
         try:
             response = requests.get(url)
@@ -53,20 +50,15 @@ elif option == "Load image from a URL 🌐":
         except:
             st.error("The URL does not seem to be valid.")
 
-# Process image and apply operations
 with contextlib.suppress(NameError):
     if upload_img is not None:
-        pil_img = (
-            upload_img.convert("RGB")
-            if mode == "url"
-            else Image.open(upload_img).convert("RGB")
-        )
-        img_arr = np.asarray(pil_img)
+        pil_img = upload_img.convert("RGB") if mode == "url" else Image.open(upload_img).convert("RGB")
+        img_arr = np.array(pil_img)
 
         # Display original image
         st.image(img_arr, use_column_width="auto", caption="Uploaded Image")
 
-        # ---------- ROTATE ----------
+        # Rotate
         degrees = st.slider(
             "Drag slider to rotate image clockwise 🔁",
             min_value=0,
@@ -75,85 +67,23 @@ with contextlib.suppress(NameError):
             key="rotate_slider",
         )
         rotated_img = pil_img.rotate(360 - degrees)
-        st.image(
-            rotated_img,
-            use_column_width="auto",
-            caption=f"Rotated by {degrees} degrees clockwise",
-        )
-        if st.button("↩️ Reset Rotation", use_container_width=True):
-            st.success("Rotation reset to original!")
-        
-        # ---------- CROP ----------
-        st.text("Crop image ✂️")
+
+        # Crop
         cropped_img = st_cropper(rotated_img, should_resize_image=True)
-        st.text(
-            f"Cropped width = {cropped_img.size[0]}px and height = {cropped_img.size[1]}px"
-        )
-        
-        if st.checkbox(
-            label="Use cropped Image?",
-            help="Select to use the cropped image in further operations",
-            key="crop",
-        ):
+
+        # Final Image
+        if st.checkbox("Use cropped Image?"):
             final_image = cropped_img
         else:
             final_image = rotated_img
 
-        # Initialize GPT API (Replace with your actual API key)
+        # Display final image
+        st.image(final_image, use_column_width="auto", caption="Final Image")
 
-        openai.api_key = st.secrets["API_KEY"]
-        #openai.api_key = "your-openai-api-key"
-        
-        # Set tesseract cmd path
-        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
-        
-        #st.title("OCR with GPT-3 Analysis")
-        
-        uploaded_file = final_image
-        
-        #uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
-        
-        if uploaded_file is not None:
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded Image", use_column_width=True)
-            st.write("")
-        
-            st.write("Recognized Text")
-        
-            # Perform OCR
-            text = pytesseract.image_to_string(image)
-            st.write(text)
-        
-            # Analyze text using ChatGPT and provide an opinion
-            if st.button('Analyze with ChatGPT'):
-                # Replace with an actual API call to OpenAI GPT
-                prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
-                response = openai.Completion.create(
-                  engine="text-davinci-002",
-                  prompt=prompt,
-                  max_tokens=200
-                )
-        
-                st.write("GPT-3 Analysis")
-                st.write(response.choices[0].text.strip())
-
-
-        
-        # ---------- FINAL OPERATIONS ----------
-        lcol, rcol = st.columns(2)
-        lcol.image(
-            img_arr,
-            use_column_width="auto",
-            caption=f"Original Image ({pil_img.size[0]} x {pil_img.size[1]})",
-        )
-        rcol.image(
-            final_image,
-            use_column_width="auto",
-            caption=f"Final Image ({final_image.size[0]} x {final_image.size[1]})",
-        )
-        
+        # Save final image
         final_image.save("final_image.png")
 
+        # Download
         with open("final_image.png", "rb") as file:
             st.download_button(
                 "💾 Download final image",
@@ -162,6 +92,19 @@ with contextlib.suppress(NameError):
                 use_container_width=True,
             )
 
+        # Perform OCR
+        st.write("Recognized Text")
+        text = pytesseract.image_to_string(final_image)
+        st.write(text)
 
+        # Analyze text using ChatGPT and provide an opinion
+        if st.button("Analyze with ChatGPT"):
+            prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=200
+            )
 
-
+            st.write("GPT-3 Analysis")
+            st.write(response.choices[0].text.strip())

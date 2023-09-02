@@ -16,6 +16,16 @@ pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 st.title("🖼️ Welcome to Aiutino!")
 
+def analyze_text_with_gpt3(text):
+    prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=200,
+        temperature=0.2
+    )
+    return response.choices[0].text.strip()
+
 # Image loading options
 option = st.radio(
     "Upload an image, take one with your camera, or load image from a URL",
@@ -47,41 +57,16 @@ with contextlib.suppress(NameError):
 
         degrees = st.slider("Drag slider to rotate image clockwise 🔁", min_value=0, max_value=360, value=0)
         rotated_img = pil_img.rotate(360 - degrees)
-
         cropped_img = st_cropper(rotated_img, should_resize_image=True)
 
-        if st.checkbox("Use cropped Image?"):
-            final_image = cropped_img
-            st.write("Recognized Text")
-            text = pytesseract.image_to_string(final_image)
-            st.write(text)
-            prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                max_tokens=200,
-                temperature=0.2
-            )
-            
+        use_cropped = st.checkbox("Use cropped Image?")
+        final_image = cropped_img if use_cropped else rotated_img
+        text = pytesseract.image_to_string(final_image)
+        
+        st.write("Recognized Text")
+        st.write(text)
+        
+        if st.button('Run GPT-3 Analysis'):
+            gpt3_response = analyze_text_with_gpt3(text)
             st.write("GPT-3 Analysis")
-            st.write(response.choices[0].text.strip())
-
-        else:
-            final_image = rotated_img
-            st.write("Recognized Text")
-            text = pytesseract.image_to_string(final_image)
-            st.write(text)
-            prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                max_tokens=200,
-                temperature=0.2
-            )
-            
-            st.write("GPT-3 Analysis")
-            st.write(response.choices[0].text.strip())
-
-
-        #st.image(final_image, use_column_width="auto", caption="Final Image")
-
+            st.write(gpt3_response)

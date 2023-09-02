@@ -10,20 +10,9 @@ import pytesseract
 
 # Initialize GPT API (Replace with your actual API key)
 openai.api_key = st.secrets["API_KEY"]
-#st.set_page_config(page_title="Aiutino ")
-
-
-
-
 
 # Set tesseract cmd path
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
-
-#st.set_page_config(
-#    page_title="Aiutino",
-#    page_icon="🖼️",
-#    layout="wide",
-#)
 
 # ---------- HEADER ----------
 st.title("🖼️ Welcome to Aiutino!")
@@ -79,13 +68,10 @@ with contextlib.suppress(NameError):
         # Final Image
         if st.checkbox("Use cropped Image?"):
             final_image = cropped_img
-             
             # Perform OCR
             st.write("Recognized Text")
             text = pytesseract.image_to_string(final_image)
             st.write(text)
-
-        
         else:
             final_image = rotated_img
             # Perform OCR
@@ -93,44 +79,38 @@ with contextlib.suppress(NameError):
             text = pytesseract.image_to_string(final_image)
             st.write(text)
 
-
         # Display final image
         st.image(final_image, use_column_width="auto", caption="Final Image")
 
-        
-       
-
-        # Analyze text using ChatGPT and provide an opinion
-        if st.button("Analyze with ChatGPT"):
+        # First button
+        if st.button("Analyze with ChatGPT - Method 1", key='button1'):
             prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
             response = openai.Completion.create(
                 engine="text-davinci-002",
                 prompt=prompt,
                 max_tokens=200
             )
+            st.write("GPT-3 Analysis - overview")
+            st.write(response.choices[0].text.strip())
 
-        if st.button('Analyze with ChatGPT'):
-                prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
-                response = openai.Completion.create(
-                    engine="text-davinci-002",
-                    prompt=prompt,
-                    max_tokens=200,
-                    temperature=0.2  # Lower temperature means less randomness
-                )
-        
-                st.write("GPT-3 Analysis - overview")
-                st.write(response.choices[0].text.strip())
-
-                prompt = f"Now look for any questions contained in the text {text}. If you find a question, a quiz, a multiple-choice question, etc., give me the answer you consider correct to that question, quiz, or multiple-choice question. Do not end your output without giving an answer to questions contained in the text. If you do not find any question simply tell me that no questions found"
-                response = openai.Completion.create(
-                    engine="text-davinci-002",
-                    prompt=prompt,
-                    max_tokens=300,
-                    temperature=0.2  # Lower temperature means less randomness
-                )
-
-                st.write("GPT-3 Analysis - answer suggestion (if any)")
-                st.write(response.choices[0].text.strip())
-
-        
-        
+        # Second button
+        if st.button("Analyze with ChatGPT - Method 2", key='button2'):
+            prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=200,
+                temperature=0.2  # Lower temperature means less randomness
+            )
+            st.write("GPT-3 Analysis - overview")
+            st.write(response.choices[0].text.strip())
+            # Additional prompt and output
+            prompt = f"Now look for any questions contained in the text {text}. If you find a question, a quiz, a multiple-choice question, etc., give me the answer you consider correct to that question, quiz, or multiple-choice question. Do not end your output without giving an answer to questions contained in the text. If you do not find any question simply tell me that no questions found"
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=300,
+                temperature=0.2  # Lower temperature means less randomness
+            )
+            st.write("GPT-3 Analysis - answer suggestion (if any)")
+            st.write(response.choices[0].text.strip())

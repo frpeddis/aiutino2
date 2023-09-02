@@ -5,6 +5,9 @@ import requests
 import streamlit as st
 from PIL import Image
 from streamlit_cropper import st_cropper
+import openai
+import pytesseract
+import pyheif
 
 VERSION = "0.7.0"
 

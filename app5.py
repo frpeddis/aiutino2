@@ -5,7 +5,14 @@ import requests
 import streamlit as st
 from PIL import Image
 from streamlit_cropper import st_cropper
+import openai
+import pytesseract
 
+# Initialize GPT API (Replace with your actual API key)
+openai.api_key = st.secrets["API_KEY"]
+
+# Set tesseract cmd path
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 VERSION = "0.7.0"
 
 st.set_page_config(

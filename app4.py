@@ -19,11 +19,11 @@ import pytesseract
 # Set tesseract cmd path
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
-st.set_page_config(
-    page_title="Aiutino",
-    page_icon="🖼️",
-    layout="wide",
-)
+#st.set_page_config(
+#    page_title="Aiutino",
+#    page_icon="🖼️",
+#    layout="wide",
+#)
 
 # ---------- HEADER ----------
 st.title("🖼️ Welcome to Aiutino!")

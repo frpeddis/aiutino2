@@ -91,12 +91,8 @@ with contextlib.suppress(NameError):
             final_image = rotated_img
 
         # ---------- FINAL OPERATIONS ----------
-        lcol, rcol = st.columns(2)
-        lcol.image(
-            img_arr,
-            use_column_width="auto",
-            caption=f"Original Image ({pil_img.size[0]} x {pil_img.size[1]})",
-        )
+        rcol = st.columns(1)
+        
         rcol.image(
             final_image,
             use_column_width="auto",

@@ -40,7 +40,7 @@ with st.sidebar:
             "* Convert to grayscale or black and white\n"
             "* Rotate\n"
             "* Change brightness, saturation, contrast, sharpness\n"
-            "* Generate random image from supplied image\n"
+       
             "* Download results"
         )
     st.components.v1.html(sidebar_html, height=750)

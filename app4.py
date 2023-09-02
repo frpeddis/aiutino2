@@ -79,28 +79,26 @@ with contextlib.suppress(NameError):
         # Final Image
         if st.checkbox("Use cropped Image?"):
             final_image = cropped_img
+             
+            # Perform OCR
+            st.write("Recognized Text")
+            text = pytesseract.image_to_string(final_image)
+            st.write(text)
+
+        
         else:
             final_image = rotated_img
+            # Perform OCR
+            st.write("Recognized Text")
+            text = pytesseract.image_to_string(final_image)
+            st.write(text)
+
 
         # Display final image
         st.image(final_image, use_column_width="auto", caption="Final Image")
 
-        # Save final image
-        final_image.save("final_image.png")
-
-        # Download
-        with open("final_image.png", "rb") as file:
-            st.download_button(
-                "💾 Download final image",
-                data=file,
-                mime="image/png",
-                use_container_width=True,
-            )
-
-        # Perform OCR
-        st.write("Recognized Text")
-        text = pytesseract.image_to_string(final_image)
-        st.write(text)
+        
+       
 
         # Analyze text using ChatGPT and provide an opinion
         #if st.button("Analyze with ChatGPT"):

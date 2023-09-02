@@ -101,14 +101,14 @@ with contextlib.suppress(NameError):
         text = pytesseract.image_to_string(final_image)
         st.write(text)
 
-        # Analyze text using ChatGPT and provide an opinion
-        if st.button("Analyze with ChatGPT"):
-            prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                max_tokens=200
-            )
+# Analyze text using ChatGPT and provide an opinion
+if st.button("Analyze with ChatGPT"):
+    prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=200
+    )
 
-            st.write("GPT-3 Analysis")
-            st.write(response.choices[0].text.strip())
+    st.write("GPT-3 Analysis")
+    st.write(response.choices[0].text.strip())

@@ -3,3 +3,8 @@ Pillow
 rembg
 streamlit
 streamlit_cropper
+pytesseract
+openai
+opencv-python
+numpy
+pyheif

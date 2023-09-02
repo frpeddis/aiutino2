@@ -135,7 +135,7 @@ pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 st.title("OCR with GPT-3 Analysis")
 
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+uploaded_file = final_image
 
 #uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 

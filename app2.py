@@ -10,12 +10,12 @@ VERSION = "0.7.0"
 
 st.set_page_config(
     page_title="Aiutino",
-    page_icon="🖼️",
+    page_icon="😎",
     layout="wide",
 )
 
 # ---------- HEADER ----------
-st.title("🖼️ Welcome to Aiutino!")
+st.title("😎 Welcome to Aiutino!")
 
 # Image loading options
 option = st.radio(

@@ -9,7 +9,7 @@ import openai
 import pytesseract
 
 # Initialize GPT API (Replace with your actual API key)
-#openai.api_key = st.secrets["API_KEY"]
+openai.api_key = st.secrets["API_KEY"]
 
 # Set tesseract cmd path
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
@@ -100,15 +100,15 @@ with contextlib.suppress(NameError):
         st.write("Recognized Text")
         text = pytesseract.image_to_string(final_image)
         st.write(text)
-        # ---------- FINAL OPERATIONS ----------
-        
-        
-        #final_image.save("final_image.png")
 
-        #with open("final_image.png", "rb") as file:
-        #    st.download_button(
-        #        "💾 Download final image",
-        #        data=file,
-        #        mime="image/png",
-        #        use_container_width=True,
-        #    )
+        # Analyze text using ChatGPT and provide an opinion
+        if st.button("Analyze with ChatGPT"):
+            prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=200
+            )
+
+           st.write("GPT-3 Analysis")
+           st.write(response.choices[0].text.strip())

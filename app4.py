@@ -55,15 +55,6 @@ with contextlib.suppress(NameError):
             st.write("Recognized Text")
             text = pytesseract.image_to_string(final_image)
             st.write(text)
-        else:
-            final_image = rotated_img
-            st.write("Recognized Text")
-            text = pytesseract.image_to_string(final_image)
-            st.write(text)
-
-        st.image(final_image, use_column_width="auto", caption="Final Image")
-
-        if st.button('Analyze with ChatGPT'):
             prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
             response = openai.Completion.create(
                 engine="text-davinci-002",
@@ -74,3 +65,23 @@ with contextlib.suppress(NameError):
             
             st.write("GPT-3 Analysis")
             st.write(response.choices[0].text.strip())
+
+        else:
+            final_image = rotated_img
+            st.write("Recognized Text")
+            text = pytesseract.image_to_string(final_image)
+            st.write(text)
+            prompt = f"This is a text to analyze: {text}. First think step by step, then understand what is the topic of the text. You are an expert on that topic. Now give me your opinion about that topic."
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=200,
+                temperature=0.2
+            )
+            
+            st.write("GPT-3 Analysis")
+            st.write(response.choices[0].text.strip())
+
+
+        #st.image(final_image, use_column_width="auto", caption="Final Image")
+

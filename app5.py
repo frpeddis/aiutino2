@@ -55,7 +55,7 @@ with contextlib.suppress(NameError):
         img_arr = np.asarray(pil_img)
 
         # Display original image
-        st.image(img_arr, use_column_width="auto", caption="Uploaded Image")
+        #st.image(img_arr, use_column_width="auto", caption="Uploaded Image")
 
         # ---------- ROTATE ----------
         degrees = st.slider(

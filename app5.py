@@ -110,5 +110,5 @@ with contextlib.suppress(NameError):
                 max_tokens=200
             )
 
-           st.write("GPT-3 Analysis")
-           st.write(response.choices[0].text.strip())
+                st.write("GPT-3 Analysis")
+                st.write(response.choices[0].text.strip())

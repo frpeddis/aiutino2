@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>High-Resolution Image Capture</title>
+  </head>
+  <body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="snap">Capture</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script>
+      var video = document.getElementById("video");
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: "user", width: 1920, height: 1080 } })
+        .then((stream) => {
+          video.srcObject = stream;
+        });
+
+      document.getElementById("snap").addEventListener("click", function () {
+        context.drawImage(video, 0, 0, 640, 480);
+        var dataURL = canvas.toDataURL("image/jpeg");
+        fetch("/upload", {
+          method: "POST",
+          body: dataURL,
+        });
+      });
+    </script>
+  </body>
+</html>

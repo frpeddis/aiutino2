@@ -3,18 +3,16 @@ from PIL import Image
 import base64
 import io
 
-# This should be the very first Streamlit command
+# Make sure this is at the top of your file
 st.set_page_config(
-    page_title="High-Res Image Capture",
+    page_title="High-Resolution Image Capture",
     page_icon="📷",
     layout="wide",
 )
 
-# Then the rest of your code
 st.title("High-Resolution Image Capture Example")
 
-
-
+# Add the JavaScript to capture high-res image
 st.markdown(
     """
     <script>

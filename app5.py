@@ -27,14 +27,15 @@ st.title("🖼️ Welcome to Aiutino!")
 # Image loading options
 option = st.radio(
     label="Upload an image, take one with your camera, or load image from a URL",
-    options=("Upload an image ⬆️", "Take a photo with my camera 📷", "Load image from a URL 🌐"),
+    #options=("Upload an image ⬆️", "Take a photo with my camera 📷", "Load image from a URL 🌐"),
+    options=("Upload an image ⬆️", "Load image from a URL 🌐"),
 )
 
-if option == "Take a photo with my camera 📷":
-    upload_img = st.camera_input(label="Take a picture")
-    mode = "camera"
+#if option == "Take a photo with my camera 📷":
+#    upload_img = st.camera_input(label="Take a picture")
+#    mode = "camera"
 
-elif option == "Upload an image ⬆️":
+if option == "Upload an image ⬆️":
     upload_img = st.file_uploader(
         label="Upload an image", type=["bmp", "jpg", "jpeg", "png", "svg"]
     )

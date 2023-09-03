@@ -1,4 +1,19 @@
+import streamlit as st
+from PIL import Image
+import base64
+import io
+
+# This should be the very first Streamlit command
+st.set_page_config(
+    page_title="High-Res Image Capture",
+    page_icon="📷",
+    layout="wide",
+)
+
+# Then the rest of your code
 st.title("High-Resolution Image Capture Example")
+
+
 
 st.markdown(
     """

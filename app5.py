@@ -26,7 +26,7 @@ st.title("🖼️ Welcome to Aiutino!")
 
 # Image loading options
 option = st.radio(
-    label="Upload an image, take one with your camera, or load image from a URL",
+    label="Upload an image or load image from a URL",
     options=("Upload an image ⬆️", "Load image from a URL 🌐"),
 )
 
@@ -55,7 +55,6 @@ with contextlib.suppress(NameError):
             if mode == "url"
             else Image.open(upload_img).convert("RGB")
         )
-        img_arr = np.asarray(pil_img)
 
         # ---------- ROTATE ----------
         degrees = st.slider(
@@ -74,12 +73,12 @@ with contextlib.suppress(NameError):
         
         # ---------- CROP ----------
         st.text("Crop image ✂️")
-        aspect_ratio = float(rotated_img.size[0]) / float(rotated_img.size[1])
-        cropped_img = st_cropper(rotated_img, should_resize_image=True, aspect_ratio=aspect_ratio)
+        aspect_ratio_tuple = (rotated_img.size[0], rotated_img.size[1])
+        cropped_img = st_cropper(rotated_img, should_resize_image=True, aspect_ratio=aspect_ratio_tuple)
         st.text(
             f"Cropped width = {cropped_img.size[0]}px and height = {cropped_img.size[1]}px"
         )
-        
+
         if st.checkbox(
             label="Use cropped Image?",
             help="Select to use the cropped image in further operations",

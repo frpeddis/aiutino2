@@ -1,9 +1,9 @@
 import streamlit as st
 from PIL import Image
 import base64
-import io
+from io import BytesIO
 
-# Make sure this is at the top of your file
+# Ensure this is at the top of your file
 st.set_page_config(
     page_title="High-Resolution Image Capture",
     page_icon="📷",
@@ -12,14 +12,13 @@ st.set_page_config(
 
 st.title("High-Resolution Image Capture Example")
 
-# Add the JavaScript to capture high-res image
 st.markdown(
     """
     <script>
     async function captureHighQualityImage() {
         const video = document.createElement('video');
         video.style.display = 'none';
-        const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user', width: 1920, height: 1080}});
+        const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user', width: {ideal: 4096}, height: {ideal: 2160}}});
         document.body.appendChild(video);
         video.srcObject = stream;
         await video.play();
@@ -30,7 +29,10 @@ st.markdown(
         stream.getTracks().forEach(track => track.stop());
         const imgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
         document.body.removeChild(video);
-        streamlit.setComponentValue('imgDataUrl', imgDataUrl);
+        const inputElement = document.createElement('textarea');
+        inputElement.value = imgDataUrl;
+        inputElement.setAttribute('id', 'base64input');
+        document.body.appendChild(inputElement);
     }
     </script>
     """,
@@ -46,10 +48,11 @@ if capture_button:
         unsafe_allow_html=True,
     )
 
-# Get Data URL from JavaScript and convert to PIL Image
-img_data_url = st.experimental_get_component_value("imgDataUrl")
+# Hidden input to store base64 string
+img_data_url = st.text_area("Image Data URL", "", key="base64input", max_chars=None, height=0)
 
-if img_data_url is not None:
+if img_data_url:
+    # Remove data URL prefix and convert base64 data to PIL Image
     img_data = base64.b64decode(img_data_url.split(",")[1])
-    img = Image.open(io.BytesIO(img_data))
-    st.image(img, caption="Captured Image", use_column_width=True)
+    img = Image.open(BytesIO(img_data))
+    st.image(img, caption="Captured High-Resolution Image", use_column_width=True)

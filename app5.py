@@ -57,43 +57,38 @@ with contextlib.suppress(NameError):
         )
 
         # ---------- ROTATE ----------
-        degrees = st.slider(
-            "Drag slider to rotate image clockwise 🔁",
-            min_value=0,
-            max_value=360,
-            value=0,
-            key="rotate_slider",
-        )
-        rotated_img = pil_img.rotate(360 - degrees)
-        st.image(
-            rotated_img,
-            use_column_width="auto",
-            caption=f"Rotated by {degrees} degrees clockwise",
-        )
+        #degrees = st.slider(
+        #    "Drag slider to rotate image clockwise 🔁",
+        #    min_value=0,
+        #    max_value=360,
+        #    value=0,
+        #    key="rotate_slider",
+        #)
+        #rotated_img = pil_img.rotate(360 - degrees)
+        #st.image(
+        #    rotated_img,
+        #    use_column_width="auto",
+        #    caption=f"Rotated by {degrees} degrees clockwise",
+        #)
         
         # ---------- CROP ----------
-        st.text("Crop image ✂️")
-        aspect_ratio_tuple = (rotated_img.size[0], rotated_img.size[1])
-        cropped_img = st_cropper(rotated_img, should_resize_image=True, aspect_ratio=aspect_ratio_tuple)
-        st.text(
-            f"Cropped width = {cropped_img.size[0]}px and height = {cropped_img.size[1]}px"
-        )
+        #st.text("Crop image ✂️")
+        #aspect_ratio_tuple = (rotated_img.size[0], rotated_img.size[1])
+        #cropped_img = st_cropper(rotated_img, should_resize_image=True, aspect_ratio=aspect_ratio_tuple)
+        #st.text(
+        #    f"Cropped width = {cropped_img.size[0]}px and height = {cropped_img.size[1]}px"
+        #)
 
-        if st.checkbox(
-            label="Use cropped Image?",
-            help="Select to use the cropped image in further operations",
-            key="crop",
-        ):
-            final_image = cropped_img
-            st.write("Recognized Text")
-            text = pytesseract.image_to_string(final_image)
-            st.write(text)
-        else:
-            final_image = rotated_img
-            st.write("Recognized Text")
-            text = pytesseract.image_to_string(final_image)
-            st.write(text)
-
+        #if st.checkbox(
+        #    label="Use cropped Image?",
+        #    help="Select to use the cropped image in further operations",
+        #    key="crop",
+        #):
+        final_image = pil_img 
+        st.write("Recognized Text")
+        text = pytesseract.image_to_string(final_image)
+        st.write(text)
+    
         # Perform OCR
         #st.write("Recognized Text")
         #text = pytesseract.image_to_string(final_image)

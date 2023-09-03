@@ -27,13 +27,8 @@ st.title("🖼️ Welcome to Aiutino!")
 # Image loading options
 option = st.radio(
     label="Upload an image, take one with your camera, or load image from a URL",
-    #options=("Upload an image ⬆️", "Take a photo with my camera 📷 ", "Load image from a URL 🌐"),
     options=("Upload an image ⬆️", "Load image from a URL 🌐"),
 )
-
-#if option == "Take a photo with my camera 📷":
-#    upload_img = st.camera_input(label="Take a picture")
-#    mode = "camera"
 
 if option == "Upload an image ⬆️":
     upload_img = st.file_uploader(
@@ -62,9 +57,6 @@ with contextlib.suppress(NameError):
         )
         img_arr = np.asarray(pil_img)
 
-        # Display original image
-        #st.image(img_arr, use_column_width="auto", caption="Uploaded Image")
-
         # ---------- ROTATE ----------
         degrees = st.slider(
             "Drag slider to rotate image clockwise 🔁",
@@ -79,12 +71,11 @@ with contextlib.suppress(NameError):
             use_column_width="auto",
             caption=f"Rotated by {degrees} degrees clockwise",
         )
-        #if st.button("↩️ Reset Rotation", use_container_width=True):
-        #    st.success("Rotation reset to original!")
         
         # ---------- CROP ----------
         st.text("Crop image ✂️")
-        cropped_img = st_cropper(rotated_img, should_resize_image=True)
+        aspect_ratio = float(rotated_img.size[0]) / float(rotated_img.size[1])
+        cropped_img = st_cropper(rotated_img, should_resize_image=True, aspect_ratio=aspect_ratio)
         st.text(
             f"Cropped width = {cropped_img.size[0]}px and height = {cropped_img.size[1]}px"
         )
@@ -97,6 +88,7 @@ with contextlib.suppress(NameError):
             final_image = cropped_img
         else:
             final_image = rotated_img
+
         # Perform OCR
         st.write("Recognized Text")
         text = pytesseract.image_to_string(final_image)

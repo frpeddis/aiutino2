@@ -85,13 +85,19 @@ with contextlib.suppress(NameError):
             key="crop",
         ):
             final_image = cropped_img
+            st.write("Recognized Text")
+            text = pytesseract.image_to_string(final_image)
+            st.write(text)
         else:
             final_image = rotated_img
+            st.write("Recognized Text")
+            text = pytesseract.image_to_string(final_image)
+            st.write(text)
 
         # Perform OCR
-        st.write("Recognized Text")
-        text = pytesseract.image_to_string(final_image)
-        st.write(text)
+        #st.write("Recognized Text")
+        #text = pytesseract.image_to_string(final_image)
+        #st.write(text)
 
 # Analyze text using ChatGPT and provide an opinion
 if st.button("Analyze with ChatGPT"):

@@ -8,4 +8,4 @@ openai
 opencv-python
 numpy
 pyheif
-cv2
+opencv-python

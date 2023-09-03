@@ -7,8 +7,6 @@ from PIL import Image
 from streamlit_cropper import st_cropper
 import openai
 import pytesseract
-import base64
-import io
 
 # Initialize GPT API (Replace with your actual API key)
 openai.api_key = st.secrets["API_KEY"]
@@ -16,35 +14,6 @@ openai.api_key = st.secrets["API_KEY"]
 # Set tesseract cmd path
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 VERSION = "0.7.0"
-
-# Inject JavaScript for high-quality image capture
-st.markdown(
-    """
-    <script>
-        async function captureHighQualityImage() {
-            const video = document.createElement('video');
-            video.style.display = 'none';
-            const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user', width: 1920, height: 1080}});
-            
-            document.body.appendChild(video);
-            video.srcObject = stream;
-            await video.play();
-
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            stream.getTracks().forEach(track => track.stop());
-
-            const imgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
-            document.body.removeChild(video);
-            
-            return imgDataUrl;
-        }
-    </script>
-    """,
-    unsafe_allow_html=True,
-)
 
 st.set_page_config(
     page_title="Aiutino",
@@ -58,31 +27,15 @@ st.title("🖼️ Welcome to Aiutino!")
 # Image loading options
 option = st.radio(
     label="Upload an image, take one with your camera, or load image from a URL",
-    options=("Upload an image ⬆️", "Take a photo with my camera 📷", "Load image from a URL 🌐", "Take a high-quality photo with my camera 📷"),
+    #options=("Upload an image ⬆️", "Take a photo with my camera 📷 ", "Load image from a URL 🌐"),
+    options=("Upload an image ⬆️", "Load image from a URL 🌐"),
 )
 
-if option == "Take a photo with my camera 📷":
-    upload_img = st.camera_input(label="Take a picture")
-    mode = "camera"
+#if option == "Take a photo with my camera 📷":
+#    upload_img = st.camera_input(label="Take a picture")
+#    mode = "camera"
 
-elif option == "Take a high-quality photo with my camera 📷":
-    img_data_url = st.text_input("High Quality Image Data URL", value="", type="default")
-    if st.button("Capture High Quality Image"):
-        st.write(
-            "<script>async function setFileInputFromCamera(){ let imgDataUrl = await captureHighQualityImage(); document.querySelector('input[data-testid=\"imgDataUrl\"]').value = imgDataUrl; }</script>",
-            unsafe_allow_html=True,
-        )
-        st.write(
-            "<button onclick=\"setFileInputFromCamera()\">Capture High Quality Image</button>",
-            unsafe_allow_html=True,
-        )
-    if img_data_url:
-        base64_data = img_data_url.split(",")[1]
-        img_bytes = base64.b64decode(base64_data)
-        upload_img = Image.open(io.BytesIO(img_bytes))
-        mode = "camera_high_quality"
-
-elif option == "Upload an image ⬆️":
+if option == "Upload an image ⬆️":
     upload_img = st.file_uploader(
         label="Upload an image", type=["bmp", "jpg", "jpeg", "png", "svg"]
     )
@@ -104,11 +57,15 @@ with contextlib.suppress(NameError):
     if upload_img is not None:
         pil_img = (
             upload_img.convert("RGB")
-            if mode in ["url", "camera_high_quality"]
+            if mode == "url"
             else Image.open(upload_img).convert("RGB")
         )
         img_arr = np.asarray(pil_img)
 
+        # Display original image
+        #st.image(img_arr, use_column_width="auto", caption="Uploaded Image")
+
+        # ---------- ROTATE ----------
         degrees = st.slider(
             "Drag slider to rotate image clockwise 🔁",
             min_value=0,
@@ -122,9 +79,15 @@ with contextlib.suppress(NameError):
             use_column_width="auto",
             caption=f"Rotated by {degrees} degrees clockwise",
         )
-
+        #if st.button("↩️ Reset Rotation", use_container_width=True):
+        #    st.success("Rotation reset to original!")
+        
+        # ---------- CROP ----------
         st.text("Crop image ✂️")
         cropped_img = st_cropper(rotated_img, should_resize_image=True)
+        st.text(
+            f"Cropped width = {cropped_img.size[0]}px and height = {cropped_img.size[1]}px"
+        )
         
         if st.checkbox(
             label="Use cropped Image?",
@@ -134,11 +97,12 @@ with contextlib.suppress(NameError):
             final_image = cropped_img
         else:
             final_image = rotated_img
-
+        # Perform OCR
         st.write("Recognized Text")
         text = pytesseract.image_to_string(final_image)
         st.write(text)
 
+# Analyze text using ChatGPT and provide an opinion
 if st.button("Analyze with ChatGPT"):
     prompt = f"This is a text to analyze: {text}. Look for any questions contained in the text. First think step by step, try to understand what the context of the topic is. then act as a super expert in that topic. then give me the answer you consider correct"
     response = openai.Completion.create(
